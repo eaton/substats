@@ -1,14 +1,15 @@
 import 'dotenv/config'
 import jetpack from '@eatonfyi/fs-jetpack';
-import { Tsv } from '@eatonfyi/serializers';
+import { Tsv, NdJson } from '@eatonfyi/serializers';
 import { createRedditClient, SortingMethod, SubredditData } from "reddit-explorer"
 import { z } from 'zod';
 
-if (!!process.env.REDDIT_SUB) {
+if (!process.env.REDDIT_SUB) {
   console.error('Set the REDDIT_SUB env variable to the name of the subreddit.');
   process.exit();
 }
 
+jetpack.setSerializer('.ndjson', NdJson);
 jetpack.setSerializer('.tsv', Tsv);
 const dir = jetpack.dir('output');
 
@@ -21,8 +22,8 @@ const PostSchema = z.object({
   num_comments: z.number().default(0),
   edited: z.coerce.boolean().default(false),
   score: z.coerce.number().default(0),
-  mod_reports: z.array(z.unknown()).transform(r => r.length ?? 0),
-  user_reports: z.array(z.unknown()).transform(r => r.length ?? 0),
+  // mod_reports: z.array(z.unknown()).transform(r => r.length ?? 0),
+  // user_reports: z.array(z.unknown()).transform(r => r.length ?? 0),
   selftext: z.coerce.string().optional().transform(t => t?.replaceAll(/[\r\n]+/g, '\\n')),
 });
 
@@ -48,13 +49,13 @@ reddit.getAccessToken();
 const subIterator = reddit.getSubredditIterator({
   name: process.env.REDDIT_SUB ?? '',
   sortMethod: SortingMethod.New,
-  limit: 50,
+  limit: 75,
 });
 
 const output: Post[] = [];
 
 let i = 0;
-while (i++ < 11) {
+while (i++ < 10) {
   const results = await subIterator.next();
 
   const parsed = ResponseSchema.parse(results);
@@ -62,4 +63,5 @@ while (i++ < 11) {
 
   output.push(...posts);
   dir.write('posts.tsv', output);
+  dir.write('posts.ndjson', output);
 }
