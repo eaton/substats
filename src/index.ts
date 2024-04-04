@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import jetpack from '@eatonfyi/fs-jetpack';
-import { Tsv, NdJson } from '@eatonfyi/serializers';
+import { Tsv, NdJson, Csv } from '@eatonfyi/serializers';
 import { createRedditClient, SortingMethod, SubredditData } from "reddit-explorer"
 import { z } from 'zod';
 
@@ -11,6 +11,7 @@ if (!process.env.REDDIT_SUB) {
 
 jetpack.setSerializer('.ndjson', NdJson);
 jetpack.setSerializer('.tsv', Tsv);
+jetpack.setSerializer('.csv', Csv);
 const dir = jetpack.dir('output');
 
 const PostSchema = z.object({
@@ -24,6 +25,7 @@ const PostSchema = z.object({
   score: z.coerce.number().default(0),
   // mod_reports: z.array(z.unknown()).transform(r => r.length ?? 0),
   // user_reports: z.array(z.unknown()).transform(r => r.length ?? 0),
+  url: z.coerce.string().optional(),
   selftext: z.coerce.string().optional().transform(t => t?.replaceAll(/[\r\n]+/g, '\\n')),
 });
 
@@ -49,7 +51,7 @@ reddit.getAccessToken();
 const subIterator = reddit.getSubredditIterator({
   name: process.env.REDDIT_SUB ?? '',
   sortMethod: SortingMethod.New,
-  limit: 75,
+  limit: 95,
 });
 
 const output: Post[] = [];
@@ -62,6 +64,8 @@ while (i++ < 10) {
   const posts = parsed.value.data.children.map(c => c.data);
 
   output.push(...posts);
-  dir.write('posts.tsv', output);
-  dir.write('posts.ndjson', output);
 }
+
+dir.write(`${process.env.REDDIT_SUB}.tsv`, output);
+dir.write(`${process.env.REDDIT_SUB}.csv`, output);
+dir.write(`${process.env.REDDIT_SUB}.ndjson`, output);
