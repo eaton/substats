@@ -1,0 +1,59 @@
+{
+  "name": "substats",
+  "version": "1.0.0",
+  "description": "Quick and dirty stats for the last 500 posts of a subreddit.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index.cjs"
+    },
+    "import": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "/dist",
+    "README.md"
+  ],
+  "scripts": {
+    "run": "tsimp src/index.ts",
+    "build": "pkgroll",
+    "clean": "shx rm -rf dist",
+    "prepare": "npm run clean && npm run build",
+    "test": "ava"
+  },
+  "ava": {
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--import=tsimp"
+    ]
+  },
+  "keywords": [
+    "cli",
+    "terminal"
+  ],
+  "author": "eaton",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "ava": "^6.1.2",
+    "pkgroll": "^2.0.2",
+    "shx": "^0.3.4",
+    "tsimp": "^2.0.11",
+    "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "@eatonfyi/fs-jetpack": "github:eaton/fs-jetpack",
+    "@eatonfyi/serializers": "github:eaton/serializers",
+    "dotenv": "^16.4.5",
+    "reddit-explorer": "^1.5.0-alpha",
+    "zod": "^3.22.4"
+  }
+}
