@@ -12,7 +12,8 @@ const cli = meow(`
     --clientId   -i  Reddit API client ID
     --secret     -s  Reddit API secret
     --format     -f  Data format (json, ndjson, tsv, csv)
-    --limit      -l  Max number of posts to retrieve
+    --limit      -l  Max number of posts to retrieve (1000)
+    --merge      -m  Merge multiple subs into one file (false)
 
 	Examples
     $ substats typescript -l50
@@ -48,6 +49,11 @@ const cli = meow(`
 			shortFlag: 'f',
       choices: ['csv', 'tsv', 'json', 'ndjson'],
       default: 'csv'
+		},
+    merge: {
+			type: 'boolean',
+			shortFlag: 'm',
+      default: false
 		},
 	}
 });

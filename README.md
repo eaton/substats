@@ -21,7 +21,9 @@ const data = await fetchPosts(options);
 
 ```bash
 $ npm install -g eaton/substats
-$ substats typescript --format=tsv
+$ substats typescript --format=tsv --clientId=XXX --secret=XXX
 
 Wrote typescript.tsv with 998 posts. 
 ```
+
+For convenience, setting the `REDDIT_CLIENT` and `REDDIT_SECRET` environment variables aliminates the need to set the command line flags each time the command is run.
