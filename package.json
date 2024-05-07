@@ -1,28 +1,24 @@
 {
   "name": "substats",
   "version": "1.0.0",
-  "description": "Quick and dirty stats for the last 500 posts of a subreddit.",
+  "description": "Quick and dirty fetching for the last 1000 posts of a subreddit.",
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.cts",
   "exports": {
-    "require": {
-      "types": "./dist/index.d.cts",
-      "default": "./dist/index.cjs"
-    },
     "import": {
       "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     }
+  },
+  "bin": {
+    "substats": "./dist/substats.js"
   },
   "files": [
     "/dist",
     "README.md"
   ],
   "scripts": {
-    "run": "tsimp src/index.ts",
-    "build": "pkgroll",
+    "run": "./dist/cli.js",
+    "build": "pkgroll --minify",
     "clean": "shx rm -rf dist",
     "prepare": "npm run clean && npm run build",
     "test": "ava"
@@ -53,6 +49,7 @@
     "@eatonfyi/fs-jetpack": "github:eaton/fs-jetpack",
     "@eatonfyi/serializers": "github:eaton/serializers",
     "dotenv": "^16.4.5",
+    "meow": "^13.2.0",
     "reddit-explorer": "^1.5.0-alpha",
     "zod": "^3.22.4"
   }
